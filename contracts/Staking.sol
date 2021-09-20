@@ -672,9 +672,11 @@ contract OlympusStaking is Ownable {
 
             IsOHM( sOHM ).rebase( epoch.distribute, epoch.number );
 
+            // Record block number for next rebase call
             epoch.endBlock = epoch.endBlock.add( epoch.length );
             epoch.number++;
             
+            // Call Distributor to send newly minted OHM to this contract
             if ( distributor != address(0) ) {
                 IDistributor( distributor ).distribute();
             }
@@ -682,6 +684,7 @@ contract OlympusStaking is Ownable {
             uint balance = contractBalance();
             uint staked = IsOHM( sOHM ).circulatingSupply();
 
+            // Find how much to increase supply for next rebase
             if( balance <= staked ) {
                 epoch.distribute = 0;
             } else {
